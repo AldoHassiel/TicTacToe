@@ -9,7 +9,7 @@ namespace TicTacToe
         {
             /*
              * Hecho por Aldo Hassiel
-             * 881 lineas de codigo, simplemente enloquecí.
+             * 871 lineas de codigo, simplemente enloquecí.
              * A falta de tiempo, soluciones e implementaciones apresuradas.
              */
             Console.Title = "TicTacToe";
@@ -20,13 +20,18 @@ namespace TicTacToe
                 x = ((Console.WindowWidth - 5) / 2),
                 y = 4
             };
-            DibujarLogotipo(posicionLogo);
+            DibujarTablero(new Tablero { TamañoCasilla = 1, TamañoTablero = 5, Simbolo = '█', Posicion = posicionLogo });
             string[] opcionesMenu = { "Jugar", "Cargar Partida", "Salir" };
             Coordenadas posicionMenu = new Coordenadas
             {
                 x = ((Console.WindowWidth - "Cargar Partida".Length) / 2) - 2,
                 y = (Console.WindowHeight - 3) / 2
             };
+            Console.SetCursorPosition((Console.WindowWidth - $"Moverse con las flechas del teclado".Length) / 2, Console.WindowHeight - 3);
+            Console.Write("Moverse con las flechas del teclado");
+            Console.SetCursorPosition((Console.WindowWidth - $"Seleccionar opcion dandole enter".Length) / 2, Console.WindowHeight - 2);
+            Console.Write("Seleccionar opcion dandole enter");
+
             string opcionSeleccionada = GenerarMenuDeOpciones(opcionesMenu, posicionMenu);
             switch (opcionSeleccionada)
             {
@@ -42,27 +47,6 @@ namespace TicTacToe
                     Console.WriteLine("Adios amigo...");
                     Environment.Exit(0);
                     break;
-            }
-        }
-        public static void DibujarLogotipo(Coordenadas posicionLogotipo)
-        {
-            char[,] logo = {
-                {' ','#', ' ', '#', ' ' },
-                {' ','#', ' ', '#', ' ' },
-                {'#','#', '#', '#', '#' },
-                {' ','#', ' ', '#', ' ' },
-                {' ','#', ' ', '#', ' ' },
-                {'#','#', '#', '#', '#' },
-                {' ','#', ' ', '#', ' ' },
-                {' ','#', ' ', '#', ' ' },
-            };
-            for (int i = 0; i < logo.GetLength(0); i++)
-            {
-                for (int j = 0; j < logo.GetLength(1); j++)
-                {
-                    Console.SetCursorPosition(posicionLogotipo.x + i, posicionLogotipo.y + j);
-                    Console.Write(logo[i, j]);
-                }
             }
         }
         public static void PantallaJuego()
@@ -260,18 +244,22 @@ namespace TicTacToe
                     {
                         Console.SetCursorPosition((Console.WindowWidth - $"Ganaste {partida.Turno.Nombre}!".Length) / 2,
                             posicionMensajes.y - 2);
+                        Console.ForegroundColor = ConsoleColor.Green;
                         Console.Write($"Ganaste {partida.Turno.Nombre}!");
+                        Console.ResetColor();
                         return partida.Turno.Nombre;
                     }
                     else if (VerificarEmpate(partida.Movimientos))
                     {
                         Console.SetCursorPosition((Console.WindowWidth - $"Ganaste {partida.Turno.Nombre}!".Length) / 2,
                             posicionMensajes.y - 2);
+                        Console.ForegroundColor = ConsoleColor.DarkYellow;
                         Console.Write($"Empate :C");
+                        Console.ResetColor();
                         juegoTerminado = true;
                         break;
                     }
-                    else if (partida.Turno.Ficha == "X") partida.Turno = partida.Jugador2;
+                    else if (partida.Turno.Nombre == partida.Jugador1.Nombre) partida.Turno = partida.Jugador2;
                     else partida.Turno = partida.Jugador1;
                 }
             } while (!juegoTerminado);
@@ -813,7 +801,9 @@ namespace TicTacToe
                     Console.Write($"    {opciones[i]}");
                 }
                 Console.SetCursorPosition(posicionMenu.x, posicionMenu.y + seleccion);
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.Write($"{simboloDeSeleccion}");
+                Console.ResetColor();
                 tecla = Console.ReadKey(true);
                 if (tecla.Key == ConsoleKey.Enter)
                 {
